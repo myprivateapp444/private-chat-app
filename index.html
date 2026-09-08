@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Private Chat</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #0b0f14;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100vh;
+      background: #111820;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 45px;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #8f9ba8;
+      margin-bottom: 35px;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid #303b48;
+      background: #0b0f14;
+      color: white;
+      font-size: 18px;
+      text-align: center;
+      outline: none;
+      margin-bottom: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      background: #2563eb;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .error {
+      color: #ff6b6b;
+      text-align: center;
+      margin-top: 15px;
+      display: none;
+    }
+
+    .chat {
+      display: none;
+      min-height: 100vh;
+      flex-direction: column;
+      padding-top: 20px;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #303b48;
+    }
+
+    .chat-header h2 {
+      font-size: 21px;
+    }
+
+    .lock {
+      color: #5eead4;
+      font-size: 14px;
+    }
+
+    .messages {
+      flex: 1;
+      padding: 25px 0;
+    }
+
+    .message {
+      background: #1d2732;
+      padding: 12px 15px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      max-width: 80%;
+    }
+
+    .message.me {
+      margin-left: auto;
+      background: #2563eb;
+    }
+
+    .name {
+      font-size: 12px;
+      color: #aeb9c5;
+      margin-bottom: 5px;
+    }
+
+    .message.me .name {
+      color: #dbeafe;
+    }
+
+    .send-area {
+      display: flex;
+      gap: 8px;
+      padding-top: 15px;
+      border-top: 1px solid #303b48;
+    }
+
+    .send-area input {
+      margin: 0;
+      text-align: left;
+      flex: 1;
+    }
+
+    .send-area button {
+      width: 80px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- PIN SCREEN -->
+    <div id="pinScreen">
+
+      <div class="logo">🔐</div>
+
+      <h1>Private Chat</h1>
+
+      <p class="subtitle">
+        Enter your private access code
+      </p>
+
+      <input
+        type="password"
+        id="pin"
+        placeholder="Enter code"
+        maxlength="20"
+      >
+
+      <button onclick="unlock()">
+        Open
+      </button>
+
+      <p class="error" id="error">
+        Wrong code
+      </p>
+
+    </div>
+
+
+    <!-- CHAT SCREEN -->
+    <div class="chat" id="chatScreen">
+
+      <div class="chat-header">
+
+        <h2>💬 Private Group</h2>
+
+        <span class="lock">
+          🔒 Private
+        </span>
+
+      </div>
+
+      <div class="messages" id="messages">
+
+        <div class="message">
+          <div class="name">System</div>
+          Welcome to your private chat.
+        </div>
+
+      </div>
+
+      <div class="send-area">
+
+        <input
+          type="text"
+          id="messageInput"
+          placeholder="Type a message..."
+          onkeydown="handleEnter(event)"
+        >
+
+        <button onclick="sendMessage()">
+          Send
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    // TEMPORARY PIN
+    // Baad mein Firebase ke saath secure authentication banayenge.
+    const SECRET_CODE = "1234";
+
+
+    function unlock() {
+
+      const enteredCode =
+        document.getElementById("pin").value;
+
+      const error =
+        document.getElementById("error");
+
+      if (enteredCode === SECRET_CODE) {
+
+        document.getElementById("pinScreen").style.display = "none";
+
+        document.getElementById("chatScreen").style.display = "flex";
+
+        error.style.display = "none";
+
+      } else {
+
+        error.style.display = "block";
+
+      }
+    }
+
+
+    function sendMessage() {
+
+      const input =
+        document.getElementById("messageInput");
+
+      const text =
+        input.value.trim();
+
+      if (text === "") return;
+
+      const message =
+        document.createElement("div");
+
+      message.className = "message me";
+
+      message.innerHTML = `
+        <div class="name">You</div>
+        ${escapeHTML(text)}
+      `;
+
+      document
+        .getElementById("messages")
+        .appendChild(message);
+
+      input.value = "";
+
+      document
+        .getElementById("messages")
+        .scrollTop =
+        document.getElementById("messages").scrollHeight;
+    }
+
+
+    function handleEnter(event) {
+
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+
+    }
+
+
+    function escapeHTML(text) {
+
+      const div =
+        document.createElement("div");
+
+      div.textContent = text;
+
+      return div.innerHTML;
+    }
+
+  </script>
+
+</body>
+</html>
