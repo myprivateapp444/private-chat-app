@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Private Chat</title>
 
   <style>
@@ -114,6 +115,7 @@
     .messages {
       flex: 1;
       padding: 25px 0;
+      overflow-y: auto;
     }
 
     .message {
@@ -122,6 +124,7 @@
       border-radius: 12px;
       margin-bottom: 12px;
       max-width: 80%;
+      word-wrap: break-word;
     }
 
     .message.me {
@@ -204,14 +207,21 @@
 
       </div>
 
+
       <div class="messages" id="messages">
 
         <div class="message">
-          <div class="name">System</div>
+
+          <div class="name">
+            System
+          </div>
+
           Welcome to your private chat.
+
         </div>
 
       </div>
+
 
       <div class="send-area">
 
@@ -233,105 +243,167 @@
   </div>
 
 
-  
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyCjt2Dbn9QCUVazu-sxYAUt_aNJFJ62GMQ",
-  authDomain: "private-chat-app-2a7e3.firebaseapp.com",
-  projectId: "private-chat-app-2a7e3",
-  storageBucket: "private-chat-app-2a7e3.firebasestorage.app",
-  messagingSenderId: "871441421629",
-  appId: "1:871441421629:web:ed2aabb24cc528dbfca154"
-};
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-firebase.initializeApp(firebaseConfig);
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-const auth = firebase.auth();
-const db = firebase.firestore();
-</script>
+
+  <!-- FIREBASE SETUP -->
+  <script>
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCjt2Dbn9QCUVazu-sxYAUt_aNJFJ62GMQ",
+      authDomain: "private-chat-app-2a7e3.firebaseapp.com",
+      projectId: "private-chat-app-2a7e3",
+      storageBucket: "private-chat-app-2a7e3.firebasestorage.app",
+      messagingSenderId: "871441421629",
+      appId: "1:871441421629:web:ed2aabb24cc528dbfca154"
+    };
+
+
+    firebase.initializeApp(firebaseConfig);
+
+
+    const auth = firebase.auth();
+
+    const db = firebase.firestore();
+
+
     // TEMPORARY PIN
-    // Baad mein Firebase ke saath secure authentication banayenge.
     const SECRET_CODE = "1234";
 
 
-   async function unlock() {
-  const enteredCode = document.getElementById("pin").value;
-  const error = document.getElementById("error");
+    // UNLOCK
+    async function unlock() {
 
-  if (enteredCode === SECRET_CODE) {
-    try {
-      await auth.signInAnonymously();
+      const enteredCode =
+        document.getElementById("pin").value;
 
-      document.getElementById("pinScreen").style.display = "none";
-      document.getElementById("chatScreen").style.display = "flex";
-      error.style.display = "none";
+      const error =
+        document.getElementById("error");
 
-    } catch (err) {
-      console.error(err);
-      error.textContent = "Firebase login failed";
-      error.style.display = "block";
+
+      // Check PIN
+      if (enteredCode !== SECRET_CODE) {
+
+        error.textContent = "Wrong PIN";
+
+        error.style.display = "block";
+
+        return;
+      }
+
+
+      // Correct PIN
+      try {
+
+        error.style.display = "none";
+
+
+        // Firebase anonymous login
+        await auth.signInAnonymously();
+
+
+        // Hide PIN screen
+        document.getElementById("pinScreen").style.display = "none";
+
+
+        // Show chat
+        document.getElementById("chatScreen").style.display = "flex";
+
+
+      } catch (err) {
+
+        console.error("Firebase error:", err);
+
+
+        error.textContent =
+          "Firebase login failed";
+
+
+        error.style.display = "block";
+
+      }
+
     }
-  } else {
-    error.textContent = "Wrong PIN";
-    error.style.display = "block";
-  }
-}
 
 
+    // SEND MESSAGE
     function sendMessage() {
 
       const input =
         document.getElementById("messageInput");
 
+
       const text =
         input.value.trim();
 
-      if (text === "") return;
+
+      if (text === "") {
+        return;
+      }
+
 
       const message =
         document.createElement("div");
 
-      message.className = "message me";
+
+      message.className =
+        "message me";
+
 
       message.innerHTML = `
         <div class="name">You</div>
         ${escapeHTML(text)}
       `;
 
+
       document
         .getElementById("messages")
         .appendChild(message);
 
+
       input.value = "";
 
-      document
-        .getElementById("messages")
-        .scrollTop =
-        document.getElementById("messages").scrollHeight;
+
+      const messages =
+        document.getElementById("messages");
+
+
+      messages.scrollTop =
+        messages.scrollHeight;
+
     }
 
 
+    // ENTER TO SEND
     function handleEnter(event) {
 
       if (event.key === "Enter") {
+
         sendMessage();
+
       }
 
     }
 
 
+    // SECURITY: ESCAPE HTML
     function escapeHTML(text) {
 
       const div =
         document.createElement("div");
 
-      div.textContent = text;
+
+      div.textContent =
+        text;
+
 
       return div.innerHTML;
+
     }
 
   </script>
