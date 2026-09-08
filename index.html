@@ -31,66 +31,11 @@
       padding: 25px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-    }
-
-    .logo {
-      text-align: center;
-      font-size: 45px;
-      margin-bottom: 15px;
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 28px;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #8f9ba8;
-      margin-bottom: 35px;
-    }
-
-    input {
-      width: 100%;
-      padding: 16px;
-      border-radius: 12px;
-      border: 1px solid #303b48;
-      background: #0b0f14;
-      color: white;
-      font-size: 18px;
-      text-align: center;
-      outline: none;
-      margin-bottom: 15px;
-    }
-
-    button {
-      width: 100%;
-      padding: 16px;
-      border: none;
-      border-radius: 12px;
-      background: #2563eb;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #1d4ed8;
-    }
-
-    .error {
-      color: #ff6b6b;
-      text-align: center;
-      margin-top: 15px;
-      display: none;
     }
 
     .chat {
-      display: none;
       min-height: 100vh;
+      display: flex;
       flex-direction: column;
       padding-top: 20px;
     }
@@ -150,13 +95,39 @@
     }
 
     .send-area input {
-      margin: 0;
-      text-align: left;
       flex: 1;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid #303b48;
+      background: #0b0f14;
+      color: white;
+      font-size: 17px;
+      outline: none;
     }
 
     .send-area button {
       width: 80px;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .status {
+      text-align: center;
+      padding: 15px;
+      color: #8f9ba8;
+    }
+
+    .error {
+      text-align: center;
+      color: #ff6b6b;
+      padding: 20px;
+      font-size: 15px;
     }
   </style>
 </head>
@@ -165,36 +136,6 @@
 
   <div class="app">
 
-    <!-- PIN SCREEN -->
-    <div id="pinScreen">
-
-      <div class="logo">🔐</div>
-
-      <h1>Private Chat</h1>
-
-      <p class="subtitle">
-        Enter your private access code
-      </p>
-
-      <input
-        type="password"
-        id="pin"
-        placeholder="Enter code"
-        maxlength="20"
-      >
-
-      <button onclick="unlock()">
-        Open
-      </button>
-
-      <p class="error" id="error">
-        Wrong code
-      </p>
-
-    </div>
-
-
-    <!-- CHAT SCREEN -->
     <div class="chat" id="chatScreen">
 
       <div class="chat-header">
@@ -207,6 +148,9 @@
 
       </div>
 
+      <div class="status" id="status">
+        Connecting...
+      </div>
 
       <div class="messages" id="messages">
 
@@ -221,7 +165,6 @@
         </div>
 
       </div>
-
 
       <div class="send-area">
 
@@ -244,6 +187,7 @@
 
 
   <!-- FIREBASE -->
+
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -252,6 +196,7 @@
 
 
   <!-- FIREBASE SETUP -->
+
   <script>
 
     const firebaseConfig = {
@@ -272,59 +217,47 @@
     const db = firebase.firestore();
 
 
-    // TEMPORARY PIN
-    const SECRET_CODE = "1234";
+    // START FIREBASE LOGIN
+
+    startApp();
 
 
-    // UNLOCK
-    async function unlock() {
+    async function startApp() {
 
-      const enteredCode =
-        document.getElementById("pin").value;
+      const status =
+        document.getElementById("status");
 
-      const error =
-        document.getElementById("error");
-
-
-      // Check PIN
-      if (enteredCode !== SECRET_CODE) {
-
-        error.textContent = "Wrong PIN";
-
-        error.style.display = "block";
-
-        return;
-      }
-
-
-      // Correct PIN
       try {
 
-        error.style.display = "none";
+        status.textContent =
+          "Connecting to private chat...";
 
 
-        // Firebase anonymous login
+        // Anonymous Firebase login
+
         await auth.signInAnonymously();
 
 
-        // Hide PIN screen
-        document.getElementById("pinScreen").style.display = "none";
+        status.textContent =
+          "Connected";
 
 
-        // Show chat
-        document.getElementById("chatScreen").style.display = "flex";
+        console.log(
+          "Firebase login successful"
+        );
 
 
       } catch (err) {
 
-        console.error("Firebase error:", err);
+        console.error(
+          "Firebase error:",
+          err
+        );
 
 
-        error.textContent =
-  "Firebase error: " + err.code;
-
-
-        error.style.display = "block";
+        status.innerHTML =
+          "Firebase error: " +
+          err.code;
 
       }
 
@@ -332,6 +265,7 @@
 
 
     // SEND MESSAGE
+
     function sendMessage() {
 
       const input =
@@ -380,6 +314,7 @@
 
 
     // ENTER TO SEND
+
     function handleEnter(event) {
 
       if (event.key === "Enter") {
@@ -391,7 +326,8 @@
     }
 
 
-    // SECURITY: ESCAPE HTML
+    // SECURITY
+
     function escapeHTML(text) {
 
       const div =
