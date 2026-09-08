@@ -233,8 +233,26 @@
   </div>
 
 
-  <script>
+  
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCjt2Dbn9QCUVazu-sxYAUt_aNJFJ62GMQ",
+  authDomain: "private-chat-app-2a7e3.firebaseapp.com",
+  projectId: "private-chat-app-2a7e3",
+  storageBucket: "private-chat-app-2a7e3.firebasestorage.app",
+  messagingSenderId: "871441421629",
+  appId: "1:871441421629:web:ed2aabb24cc528dbfca154"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+</script>
     // TEMPORARY PIN
     // Baad mein Firebase ke saath secure authentication banayenge.
     const SECRET_CODE = "1234";
