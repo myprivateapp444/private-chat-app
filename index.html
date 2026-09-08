@@ -258,28 +258,28 @@ const db = firebase.firestore();
     const SECRET_CODE = "1234";
 
 
-    function unlock() {
+   async function unlock() {
+  const enteredCode = document.getElementById("pin").value;
+  const error = document.getElementById("error");
 
-      const enteredCode =
-        document.getElementById("pin").value;
+  if (enteredCode === SECRET_CODE) {
+    try {
+      await auth.signInAnonymously();
 
-      const error =
-        document.getElementById("error");
+      document.getElementById("pinScreen").style.display = "none";
+      document.getElementById("chatScreen").style.display = "flex";
+      error.style.display = "none";
 
-      if (enteredCode === SECRET_CODE) {
-
-        document.getElementById("pinScreen").style.display = "none";
-
-        document.getElementById("chatScreen").style.display = "flex";
-
-        error.style.display = "none";
-
-      } else {
-
-        error.style.display = "block";
-
-      }
+    } catch (err) {
+      console.error(err);
+      error.textContent = "Firebase login failed";
+      error.style.display = "block";
     }
+  } else {
+    error.textContent = "Wrong PIN";
+    error.style.display = "block";
+  }
+}
 
 
     function sendMessage() {
