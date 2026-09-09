@@ -3,111 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Private Chat</title>
+  <title>Tuition Tracker</title>
 
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
     }
 
     body {
-      min-height: 100vh;
-      background: #0b0f14;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
       color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
     .app {
-      width: 100%;
-      max-width: 430px;
+      max-width: 500px;
+      margin: auto;
       min-height: 100vh;
-      background: #111820;
-      padding: 25px;
-      display: flex;
-      flex-direction: column;
+      padding: 20px;
     }
 
-    .chat {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding-top: 20px;
-    }
-
-    .chat-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 18px;
-      border-bottom: 1px solid #303b48;
-    }
-
-    .chat-header h2 {
-      font-size: 21px;
-    }
-
-    .lock {
-      color: #5eead4;
-      font-size: 14px;
-    }
-
-    .messages {
-      flex: 1;
-      padding: 25px 0;
-      overflow-y: auto;
-    }
-
-    .message {
-      background: #1d2732;
-      padding: 12px 15px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      max-width: 80%;
-      word-wrap: break-word;
-    }
-
-    .message.me {
-      margin-left: auto;
-      background: #2563eb;
-    }
-
-    .name {
-      font-size: 12px;
-      color: #aeb9c5;
+    h1 {
+      margin-top: 10px;
       margin-bottom: 5px;
     }
 
-    .message.me .name {
-      color: #dbeafe;
+    .subtitle {
+      color: #94a3b8;
+      margin-bottom: 25px;
     }
 
-    .send-area {
+    .card {
+      background: #1e293b;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    }
+
+    .person {
       display: flex;
-      gap: 8px;
-      padding-top: 15px;
-      border-top: 1px solid #303b48;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
     }
 
-    .send-area input {
-      flex: 1;
-      padding: 16px;
-      border-radius: 12px;
-      border: 1px solid #303b48;
-      background: #0b0f14;
-      color: white;
-      font-size: 17px;
-      outline: none;
+    .name {
+      font-size: 20px;
+      font-weight: bold;
     }
 
-    .send-area button {
-      width: 80px;
-      padding: 16px;
+    .status {
+      padding: 7px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      background: #475569;
+    }
+
+    .green {
+      background: #166534;
+    }
+
+    .red {
+      background: #991b1b;
+    }
+
+    .yellow {
+      background: #854d0e;
+    }
+
+    .info {
+      color: #cbd5e1;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
       border: none;
       border-radius: 12px;
       background: #2563eb;
@@ -115,234 +89,266 @@
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
+      margin-top: 10px;
     }
 
-    .status {
-      text-align: center;
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .location-box {
+      background: #0f172a;
       padding: 15px;
-      color: #8f9ba8;
+      border-radius: 12px;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #cbd5e1;
+      word-break: break-word;
     }
 
-    .error {
-      text-align: center;
-      color: #ff6b6b;
-      padding: 20px;
-      font-size: 15px;
+    .notice {
+      background: #172554;
+      border: 1px solid #1d4ed8;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      color: #bfdbfe;
+      line-height: 1.5;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #94a3b8;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="app">
+<div class="app">
 
-    <div class="chat" id="chatScreen">
+  <h1>🎓 Tuition Tracker</h1>
+  <div class="subtitle">Guardian Dashboard</div>
 
-      <div class="chat-header">
+  <div class="notice">
+    📍 Location tracking works only after the student gives
+    location permission on their phone.
+  </div>
 
-        <h2>💬 Private Group</h2>
+  <!-- BHAI 1 -->
+  <div class="card">
 
-        <span class="lock">
-          🔒 Private
-        </span>
+    <div class="person">
+      <div class="name">👦 Bhai 1</div>
+      <div id="status1" class="status yellow">Checking...</div>
+    </div>
 
-      </div>
+    <div class="info">
+      Last update:
+      <span id="time1">Not available</span>
+      <br>
 
-      <div class="status" id="status">
-        Connecting...
-      </div>
+      Latitude:
+      <span id="lat1">---</span>
+      <br>
 
-      <div class="messages" id="messages">
+      Longitude:
+      <span id="lng1">---</span>
+    </div>
 
-        <div class="message">
+    <button onclick="startTracking(1)">
+      📍 Start Location
+    </button>
 
-          <div class="name">
-            System
-          </div>
-
-          Welcome to your private chat.
-
-        </div>
-
-      </div>
-
-      <div class="send-area">
-
-        <input
-          type="text"
-          id="messageInput"
-          placeholder="Type a message..."
-          onkeydown="handleEnter(event)"
-        >
-
-        <button onclick="sendMessage()">
-          Send
-        </button>
-
-      </div>
-
+    <div id="location1" class="location-box">
+      Location not started.
     </div>
 
   </div>
 
 
-  <!-- FIREBASE -->
+  <!-- BHAI 2 -->
+  <div class="card">
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <div class="person">
+      <div class="name">👦 Bhai 2</div>
+      <div id="status2" class="status yellow">Checking...</div>
+    </div>
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <div class="info">
+      Last update:
+      <span id="time2">Not available</span>
+      <br>
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+      Latitude:
+      <span id="lat2">---</span>
+      <br>
 
+      Longitude:
+      <span id="lng2">---</span>
+    </div>
 
-  <!-- FIREBASE SETUP -->
+    <button onclick="startTracking(2)">
+      📍 Start Location
+    </button>
 
-  <script>
+    <div id="location2" class="location-box">
+      Location not started.
+    </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCjt2Dbn9QCUVazu-sxYAUt_aNJFJ62GMQ",
-      authDomain: "private-chat-app-2a7e3.firebaseapp.com",
-      projectId: "private-chat-app-2a7e3",
-      storageBucket: "private-chat-app-2a7e3.firebasestorage.app",
-      messagingSenderId: "871441421629",
-      appId: "1:871441421629:web:ed2aabb24cc528dbfca154"
-    };
-
-
-    firebase.initializeApp(firebaseConfig);
-
-
-    const auth = firebase.auth();
-
-    const db = firebase.firestore();
-
-
-    // START FIREBASE LOGIN
-
-    startApp();
+  </div>
 
 
-    async function startApp() {
+  <div class="card">
 
-      const status =
-        document.getElementById("status");
+    <h3>🏫 Tuition</h3>
 
-      try {
+    <div class="info">
+      Tuition location will be added here.
+      <br><br>
 
-        status.textContent =
-          "Connecting to private chat...";
+      <span class="small">
+        Later we will add automatic:
+        <br>
+        • Left home
+        <br>
+        • Reached tuition
+        <br>
+        • Present in tuition area
+        <br>
+        • Left tuition
+        <br>
+        • Time spent
+      </span>
+    </div>
 
+  </div>
 
-        // Anonymous Firebase login
-
-        await auth.signInAnonymously();
-
-
-        status.textContent =
-          "Connected";
-
-
-        console.log(
-          "Firebase login successful"
-        );
-
-
-      } catch (err) {
-
-        console.error(
-          "Firebase error:",
-          err
-        );
+</div>
 
 
-        status.innerHTML =
-          "Firebase error: " +
-          err.code;
+<script>
 
+  /*
+    LOCATION TRACKING
+  */
+
+  let watches = {};
+
+  function startTracking(person) {
+
+    if (!navigator.geolocation) {
+
+      alert("Location is not supported on this device.");
+
+      return;
+    }
+
+    const status = document.getElementById("status" + person);
+
+    status.textContent = "Requesting location...";
+    status.className = "status yellow";
+
+    navigator.geolocation.getCurrentPosition(
+
+      function(position) {
+
+        updateLocation(person, position);
+
+        status.textContent = "Location Active";
+        status.className = "status green";
+
+      },
+
+      function(error) {
+
+        status.textContent = "Location Denied";
+        status.className = "status red";
+
+        document.getElementById("location" + person).textContent =
+          "Location permission was denied or unavailable.";
+
+        console.log(error);
+
+      },
+
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
       }
 
+    );
+
+
+    /*
+      Continue watching location
+    */
+
+    if (watches[person]) {
+
+      navigator.geolocation.clearWatch(watches[person]);
+
     }
 
+    watches[person] = navigator.geolocation.watchPosition(
 
-    // SEND MESSAGE
+      function(position) {
 
-    function sendMessage() {
+        updateLocation(person, position);
 
-      const input =
-        document.getElementById("messageInput");
+        status.textContent = "Location Active";
+        status.className = "status green";
 
+      },
 
-      const text =
-        input.value.trim();
+      function(error) {
 
+        console.log("Location error:", error);
 
-      if (text === "") {
-        return;
+        status.textContent = "Location Error";
+        status.className = "status red";
+
+      },
+
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000
       }
 
+    );
 
-      const message =
-        document.createElement("div");
-
-
-      message.className =
-        "message me";
+  }
 
 
-      message.innerHTML = `
-        <div class="name">You</div>
-        ${escapeHTML(text)}
-      `;
+  function updateLocation(person, position) {
 
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
 
-      document
-        .getElementById("messages")
-        .appendChild(message);
+    const accuracy = position.coords.accuracy;
 
+    document.getElementById("lat" + person).textContent =
+      latitude.toFixed(6);
 
-      input.value = "";
+    document.getElementById("lng" + person).textContent =
+      longitude.toFixed(6);
 
+    document.getElementById("time" + person).textContent =
+      new Date().toLocaleTimeString();
 
-      const messages =
-        document.getElementById("messages");
+    document.getElementById("location" + person).innerHTML =
+      "📍 Location received<br><br>" +
+      "Latitude: " + latitude.toFixed(6) +
+      "<br>" +
+      "Longitude: " + longitude.toFixed(6) +
+      "<br>" +
+      "Accuracy: approximately " + Math.round(accuracy) + " meters";
 
+  }
 
-      messages.scrollTop =
-        messages.scrollHeight;
-
-    }
-
-
-    // ENTER TO SEND
-
-    function handleEnter(event) {
-
-      if (event.key === "Enter") {
-
-        sendMessage();
-
-      }
-
-    }
-
-
-    // SECURITY
-
-    function escapeHTML(text) {
-
-      const div =
-        document.createElement("div");
-
-
-      div.textContent =
-        text;
-
-
-      return div.innerHTML;
-
-    }
-
-  </script>
+</script>
 
 </body>
 </html>
